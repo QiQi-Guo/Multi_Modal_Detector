@@ -1,0 +1,30 @@
+seed: 0
+deterministic: true
+
+checkpoint_config:
+  interval: 1
+  max_keep_ckpts: 10
+
+log_config:
+  interval: 50
+  hooks:
+    -
+      type: TextLoggerHook
+    -
+      type: TensorboardLoggerHook
+
+load_from: null
+#load_from: /home/adas4gpu1/Documents/qixi_code/bevfusion-main/checkpoints/epoch_20.pth
+resume_from: null
+#resume_from: /media/qixi/Storage/bevfusion-main/run-dir/fusion_voxel/light_head_voxel_only/epoch_20.pth
+
+
+cudnn_benchmark: false
+fp16:
+  loss_scale: 
+    growth_interval: 2000
+
+max_epochs: 20
+runner:
+  type: CustomEpochBasedRunner
+  max_epochs: ${max_epochs}

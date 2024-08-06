@@ -1,0 +1,84 @@
+voxel_size: [0.075, 0.075, 0.2]
+point_cloud_range: [-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]
+
+model:
+  encoders:
+    camera:
+      backbone:
+        type: ResNet
+        depth: 18
+        num_stages: 4
+        out_indices: [1, 2, 3]
+#        frozen_stages: 4
+        frozen_stages: -1
+        norm_cfg:
+          type: BN
+          requires_grad: False
+        norm_eval: True
+        style: pytorch
+        pretrained: /home/adas4gpu1/Documents/bevfusion/pretrained/resnet18-imgnet1K_v1.pth
+      neck:
+        in_channels: [128, 256, 512]
+
+    lidar:
+      voxelize:
+        max_num_points: 10
+        point_cloud_range: ${point_cloud_range}
+        voxel_size: ${voxel_size}
+        max_voxels: [120000, 160000]
+      backbone:
+        sparse_shape: [1440, 1440, 41]
+        in_channels: 5
+        output_channels: 128
+        order:
+          - conv
+          - norm
+          - act
+        encoder_channels:
+          - [16, 16, 32]
+          - [32, 32, 64]
+          - [64, 64, 128]
+          - [128, 128]
+        encoder_paddings:
+          - [0, 0, 1]
+          - [0, 0, 1]
+          - [0, 0, [1, 1, 0]]
+          - [0, 0]
+        block_type: basicblock
+
+
+  heads:
+    object:
+      train_cfg:
+        grid_size: [1440, 1440, 41]
+      test_cfg:
+        grid_size: [1440, 1440, 41]
+
+lr_config:
+  policy: CosineAnnealing
+  warmup: linear
+  warmup_iters: 1000
+  warmup_ratio: 0.33333333
+  min_lr_ratio: 6.0e-6 # ---zhu---#
+
+
+optimizer:
+  type: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+
+
+momentum_config:
+  policy: cyclic
+
+gt_paste_stop_epoch: 0
+max_epochs: 20
+data:
+  samples_per_gpu: 3  # batchsize_changing
+  workers_per_gpu: 8
+
+
+#load_from: /home/adas4gpu1/Documents/bevfusion/run_dir/voxel/voxel_large_only_long/epoch_80.pth
+load_from: null
+resume_from: /home/adas4gpu1/Documents/bevfusion/run_dir/voxel/voxel_light_fastbev_1layer_20epoch_retrain/epoch_6.pth
+#resume_from: null

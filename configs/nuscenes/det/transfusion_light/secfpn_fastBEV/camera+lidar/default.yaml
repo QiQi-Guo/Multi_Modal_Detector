@@ -1,0 +1,50 @@
+model:
+  encoders:
+    camera:
+      neck:
+        type: GeneralizedLSSFPN
+        in_channels: [512, 1024, 2048]
+        out_channels: 256
+        start_level: 0
+        num_outs: 3
+        norm_cfg:
+          type: BN2d
+          requires_grad: true
+        act_cfg:
+          type: ReLU
+          inplace: true
+        upsample_cfg:
+          mode: bilinear
+          align_corners: false
+      vtransform:
+        type: fast_BEV
+        image_size: ${image_size}
+        voxel_size: [0.6, 0.6, 1.5]
+        n_voxels: [180, 180, 4]
+        voxel_center: [0.0, 0.0, -1.0]
+
+    lidar:
+      voxelize:
+        point_cloud_range: ${point_cloud_range}
+        voxel_size: ${voxel_size}
+      backbone:
+        type: SparseEncoder
+
+
+optimizer:
+  type: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+
+optimizer_config:
+  grad_clip:
+    max_norm: 35
+    norm_type: 2
+
+lr_config:
+  policy: cyclic
+
+momentum_config:
+  policy: cyclic
+
+

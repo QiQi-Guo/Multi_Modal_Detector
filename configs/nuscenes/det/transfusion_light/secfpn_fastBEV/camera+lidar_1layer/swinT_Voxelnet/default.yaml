@@ -1,0 +1,90 @@
+voxel_size: [0.075, 0.075, 0.2]
+point_cloud_range: [-54.0, -54.0, -5.0, 54.0, 54.0, 3.0]
+
+model:
+  encoders:
+    camera:
+      backbone:
+        type: SwinTransformer
+        embed_dims: 96
+        depths: [ 2, 2, 6, 2 ]
+        num_heads: [ 3, 6, 12, 24 ]
+        window_size: 7
+        mlp_ratio: 4
+        qkv_bias: true
+        qk_scale: null
+        drop_rate: 0.
+        attn_drop_rate: 0.
+        drop_path_rate: 0.2
+        patch_norm: true
+        out_indices: [ 1, 2, 3 ]
+        with_cp: false
+        convert_weights: true
+        init_cfg:
+          type: Pretrained
+          checkpoint: /media/qixi/Storage/bevfusion-main/pretrained/swin_tiny_patch4_window7_224.pth
+      neck:
+        in_channels: [ 192, 384, 768 ]
+
+    lidar:
+      voxelize:
+        max_num_points: 10
+        point_cloud_range: ${point_cloud_range}
+        voxel_size: ${voxel_size}
+        max_voxels: [120000, 160000]
+      backbone:
+        sparse_shape: [1440, 1440, 41]
+        in_channels: 5
+        output_channels: 128
+        order:
+          - conv
+          - norm
+          - act
+        encoder_channels:
+          - [16, 16, 32]
+          - [32, 32, 64]
+          - [64, 64, 128]
+          - [128, 128]
+        encoder_paddings:
+          - [0, 0, 1]
+          - [0, 0, 1]
+          - [0, 0, [1, 1, 0]]
+          - [0, 0]
+        block_type: basicblock
+
+
+  heads:
+    object:
+      train_cfg:
+        grid_size: [1440, 1440, 41]
+      test_cfg:
+        grid_size: [1440, 1440, 41]
+
+lr_config:
+  policy: CosineAnnealing
+  warmup: linear
+  warmup_iters: 1000
+  warmup_ratio: 0.33333333
+  min_lr_ratio: 6.0e-6 # ---zhu---#
+
+
+optimizer:
+  type: AdamW
+  lr: 1.0e-4
+  weight_decay: 0.01
+
+
+momentum_config:
+  policy: cyclic
+
+gt_paste_stop_epoch: 0
+max_epochs: 60
+data:
+  samples_per_gpu: 2  # batchsize_changing
+  workers_per_gpu: 8
+
+
+load_from: /home/adas4gpu1/Documents/bevfusion/run_dir/voxel/voxel_large_only_long/epoch_80.pth
+#load_from: null
+#resume_from: /home/adas4gpu1/Documents/bevfusion/run_dir/voxel/fastbev_1layer_resnet50_60epoch/latest.pth
+resume_from: null
