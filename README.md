@@ -76,3 +76,8 @@ Please run:
 ```bash
 torchpack dist-run -np 8 python tools/train.py configs/nuscenes/det/transfusion_light/secfpn_fastBEV/camera+lidar_1layer/frozenResnet18_Voxelnet/convfuser.yaml --load_from pretrained/lidar-only-det.pth 
 ```
+
+### checkpoint
+[Detector_R18](https://drive.google.com/file/d/1RVuDPCrAnpWMOImo__6wLzhOctRL-Hfy/view?usp=drive_link)
+### pretrained
+[lidar-only-det.pth](https://drive.google.com/file/d/10T04WXpWlzYLp3rCvsd2yGJdCrA-Zrta/view?usp=drive_link)
