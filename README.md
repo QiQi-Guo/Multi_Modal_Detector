@@ -83,4 +83,8 @@ torchpack dist-run -np 8 python tools/train.py configs/nuscenes/det/transfusion_
 [lidar-only-det.pth](https://drive.google.com/file/d/10T04WXpWlzYLp3rCvsd2yGJdCrA-Zrta/view?usp=drive_link)
 
 ### demo
-https://drive.google.com/file/d/1o2gRkADjCobh-Tuk9wGFoc-u-xPwdjsv/view?usp=drive_link
+#### [sunny](https://drive.google.com/file/d/1o2gRkADjCobh-Tuk9wGFoc-u-xPwdjsv/view?usp=drive_link)
+#### [rainy](https://drive.google.com/file/d/1KF2oLEmueI-3Wqtuk4Be4cGFO3KeFOOT/view?usp=drive_link)
+
+
+
