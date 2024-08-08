@@ -1,4 +1,3 @@
-![framework](assets/pipeline.png "framework")
 ## Usage
 
 ### Prerequisites
